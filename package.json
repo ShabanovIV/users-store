@@ -1,20 +1,26 @@
 {
   "name": "uses-store",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "users-store.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node users-store.ts",
+    "build": "tsc",
+    "start:prod": "node dist/users-store.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "engines": {
+    "node": ">=20.17.0"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "body-parser": "^1.20.2"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.7"
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/express": "^4.17.17",
+    "@types/body-parser": "^1.19.2",
+    "typescript": "^5.1.6",
+    "ts-node": "^10.9.1"
   }
 }
