@@ -79,6 +79,11 @@ app.get("/api/protected", (req: Request, res: Response) => {
   }
 });
 
+app.get("/api/users", (req: Request, res: Response) => {
+  const sanitizedUsers = users.map(({ password, ...user }) => user);
+  res.json(sanitizedUsers);
+});
+
 app.listen(PORT, () =>
   console.log(`Сервер запущен на http://localhost:${PORT}`)
 );
