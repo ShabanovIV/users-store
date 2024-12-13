@@ -7,5 +7,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["users-store.ts"]
+  "include": ["program.ts", "*.ts", "**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
