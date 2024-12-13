@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from "cors"; // Импортируем cors
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import bodyParser from "body-parser";
@@ -7,6 +8,10 @@ const app = express();
 const PORT = 3000;
 const SECRET_KEY = "your_secret_key"; // Замените на более сложный ключ
 
+// Настраиваем CORS для разрешения запросов от любых источников
+app.use(cors());
+
+// Настраиваем BodyParser
 app.use(bodyParser.json());
 
 // Пример базы данных (может быть заменена на MongoDB, PostgreSQL и т.д.)
@@ -22,13 +27,10 @@ const users: User[] = [
 
 // Роут для регистрации пользователя
 app.post("/api/register", (req: Request, res: Response) => {
-  const { username, password }: { username: string; password: string } =
-    req.body;
+  const { username, password }: { username: string; password: string } = req.body;
 
   if (users.find((user) => user.username === username)) {
-    return res
-      .status(409)
-      .json({ message: "Пользователь с таким именем уже существует" });
+    return res.status(409).json({ message: "Пользователь с таким именем уже существует" });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -45,14 +47,11 @@ app.post("/api/register", (req: Request, res: Response) => {
 
 // Роут для авторизации
 app.post("/api/login", (req: Request, res: Response) => {
-  const { username, password }: { username: string; password: string } =
-    req.body;
+  const { username, password }: { username: string; password: string } = req.body;
   const user = users.find((user) => user.username === username);
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res
-      .status(401)
-      .json({ message: "Неверное имя пользователя или пароль" });
+    return res.status(401).json({ message: "Неверное имя пользователя или пароль" });
   }
 
   const token = jsonwebtoken.sign(
@@ -84,6 +83,4 @@ app.get("/api/users", (req: Request, res: Response) => {
   res.json(sanitizedUsers);
 });
 
-app.listen(PORT, () =>
-  console.log(`Сервер запущен на http://localhost:${PORT}`)
-);
+app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));
