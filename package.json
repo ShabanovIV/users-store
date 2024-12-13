@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "users-store.ts",
   "scripts": {
-    "start": "ts-node users-store.ts",
+    "start": "ts-node program.ts",
     "build": "tsc",
-    "start:prod": "node dist/users-store.js"
+    "start:prod": "node dist/program.js"
   },
   "engines": {
     "node": ">=20.17.0"
