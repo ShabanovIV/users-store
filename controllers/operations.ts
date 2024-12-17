@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { authenticateToken } from "../middlewares/authenticateToken";
 import fs from "fs";
 import path from "path";
+import { ensureFileExists } from "../helpers/fileHelper";
 
 export const operationsRouter = Router();
 
@@ -20,15 +21,14 @@ const OPERATIONS_FILE = path.join(__dirname, "../database/operations.json");
 
 // Функция для чтения операций из файла
 const readOperations = (): Operation[] => {
-  if (!fs.existsSync(OPERATIONS_FILE)) {
-    return [];
-  }
+  ensureFileExists(OPERATIONS_FILE);
   const data = fs.readFileSync(OPERATIONS_FILE, "utf-8");
   return JSON.parse(data);
 };
 
 // Функция для записи операций в файл
 const writeOperations = (operations: Operation[]): void => {
+  ensureFileExists(OPERATIONS_FILE);
   fs.writeFileSync(OPERATIONS_FILE, JSON.stringify(operations, null, 2));
 };
 
