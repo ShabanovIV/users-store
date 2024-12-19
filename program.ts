@@ -7,8 +7,16 @@ import { operationsRouter } from "./controllers/operations";
 const app = express();
 const PORT = 3000;
 
+// Разрешить запросы с любого источника
+app.use(
+  cors({
+    origin: "*", // Разрешить запросы с любого клиента
+    methods: "GET,POST,PUT,DELETE", // Укажите разрешенные методы
+    allowedHeaders: "Content-Type,Authorization", // Укажите разрешенные заголовки
+  })
+);
+
 // Настройка middleware
-app.use(cors());
 app.use(bodyParser.json());
 
 // Подключение маршрутов
