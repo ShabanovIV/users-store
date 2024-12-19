@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { authenticateToken } from "../middlewares/authenticateToken";
+import { verifyTokenMiddleware } from "../middlewares/verifyTokenMiddleware";
 import fs from "fs";
 import path from "path";
 import { ensureFileExists } from "../helpers/fileHelper";
@@ -33,13 +33,13 @@ const writeOperations = (operations: Operation[]): void => {
 };
 
 // Получить список всех операций
-operationsRouter.get("/", authenticateToken, (req: Request, res: Response) => {
+operationsRouter.get("/", verifyTokenMiddleware, (req: Request, res: Response) => {
   const operations = readOperations();
   res.json(operations);
 });
 
 // Получить операцию по id
-operationsRouter.get("/:id", authenticateToken, (req: Request, res: Response) => {
+operationsRouter.get("/:id", verifyTokenMiddleware, (req: Request, res: Response) => {
   const { id } = req.params;
   const operations = readOperations();
   const operation = operations.find((op) => op.id === id);
@@ -52,7 +52,7 @@ operationsRouter.get("/:id", authenticateToken, (req: Request, res: Response) =>
 });
 
 // Добавить операцию
-operationsRouter.post("/", authenticateToken, (req: Request, res: Response) => {
+operationsRouter.post("/", verifyTokenMiddleware, (req: Request, res: Response) => {
   const { amount, category, title, description } = req.body;
 
   if (!amount || !category || !title || !description) {
@@ -77,7 +77,7 @@ operationsRouter.post("/", authenticateToken, (req: Request, res: Response) => {
 });
 
 // Удалить операцию по id
-operationsRouter.delete("/:id", authenticateToken, (req: Request, res: Response) => {
+operationsRouter.delete("/:id", verifyTokenMiddleware, (req: Request, res: Response) => {
   const { id } = req.params;
   let operations = readOperations();
 

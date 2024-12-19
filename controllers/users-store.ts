@@ -1,7 +1,10 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-import { SECRET_KEY, authenticateToken } from "../middlewares/authenticateToken";
+import {
+  SECRET_KEY,
+  verifyTokenMiddleware,
+} from "../middlewares/verifyTokenMiddleware";
 import fs from "fs";
 import path from "path";
 import { ensureFileExists } from "../helpers/fileHelper";
@@ -31,18 +34,25 @@ const writeUsers = (users: User[]): void => {
 };
 
 // Роут для проверки токена
-usersRouter.get("/verify-token", authenticateToken, (req: Request, res: Response) => {
-  const user = (req as any).user;
-  res.status(200).json({ message: "Токен валиден", user });
-});
+usersRouter.get(
+  "/verify-token",
+  verifyTokenMiddleware,
+  (req: Request, res: Response) => {
+    const user = (req as any).user;
+    res.status(200).json({ message: "Токен валиден", user });
+  }
+);
 
 // Роут для регистрации пользователя
 usersRouter.post("/register", (req: Request, res: Response) => {
-  const { username, password }: { username: string; password: string } = req.body;
+  const { username, password }: { username: string; password: string } =
+    req.body;
 
   const users = readUsers();
   if (users.find((user) => user.username === username)) {
-    return res.status(409).json({ message: "Пользователь с таким именем уже существует" });
+    return res
+      .status(409)
+      .json({ message: "Пользователь с таким именем уже существует" });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -60,19 +70,24 @@ usersRouter.post("/register", (req: Request, res: Response) => {
 
 // Роут для авторизации
 usersRouter.post("/login", (req: Request, res: Response) => {
-  const { username, password }: { username: string; password: string } = req.body;
+  const { username, password }: { username: string; password: string } =
+    req.body;
 
   const users = readUsers();
   const user = users.find((user) => user.username === username);
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ message: "Неверное имя пользователя или пароль" });
+    return res
+      .status(401)
+      .json({ message: "Неверное имя пользователя или пароль" });
   }
 
-  const token = jsonwebtoken.sign({ id: user.id, username: user.username }, SECRET_KEY, {
+  const userResult = { id: user.id, username: user.username };
+
+  const token = jsonwebtoken.sign({ user: userResult }, SECRET_KEY, {
     expiresIn: "1h",
   });
-  res.json({ token });
+  res.status(200).json({ token: token, user: userResult });
 });
 
 // Роут для получения всех пользователей
