@@ -4,7 +4,7 @@
   "main": "users-store.ts",
   "scripts": {
     "start": "ts-node program.ts",
-    "build": "tsc && copyfiles -u 1 'database/**/*.json' dist",
+    "build": "tsc",
     "start:prod": "node dist/program.js"
   },
   "engines": {
