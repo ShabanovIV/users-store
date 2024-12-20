@@ -8,6 +8,7 @@ import {
 import fs from "fs";
 import path from "path";
 import { ensureFileExists } from "../helpers/fileHelper";
+import { parseUser } from "../helpers/tokenHelper";
 
 export const usersRouter = Router();
 
@@ -34,14 +35,13 @@ const writeUsers = (users: User[]): void => {
 };
 
 // Роут для проверки токена
-usersRouter.get(
-  "/verify-token",
-  verifyTokenMiddleware,
-  (req: Request, res: Response) => {
-    const user = (req as any).user;
-    res.status(200).json({ message: "Токен валиден", user });
-  }
-);
+usersRouter.get("/verify-token", (req: Request, res: Response) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
+  const result = parseUser(token, SECRET_KEY);
+  res
+    .status(result.status)
+    .json({ message: "Токен валиден", user: result.user });
+});
 
 // Роут для регистрации пользователя
 usersRouter.post("/register", (req: Request, res: Response) => {

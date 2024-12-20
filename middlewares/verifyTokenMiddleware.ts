@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import { parseUser } from "../helpers/tokenHelper";
 
 dotenv.config();
 export const SECRET_KEY = process.env.KEY || "super_secret";
@@ -11,16 +12,12 @@ export function verifyTokenMiddleware(
   next: Function
 ) {
   const token = req.headers["authorization"]?.split(" ")[1];
+  const result = parseUser(token, SECRET_KEY);
 
-  if (!token) {
-    return res.status(401).json({ message: "Данные авторизации не верные" });
-  }
-
-  try {
-    const decoded = jsonwebtoken.verify(token, SECRET_KEY) as JwtPayload;
-    (req as any).user = decoded.user; // Сохраняем данные пользователя в запросе для последующего использования
-    next(); // Продолжаем выполнение маршрута
-  } catch (error) {
-    return res.status(403).json({ message: "Доступ запрещён" });
+  if (result.status === 200) {
+    (req as any).user = result.user;
+    next();
+  } else {
+    return res.status(result.status).json({ message: "Доступ запрещён" });
   }
 }
