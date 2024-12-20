@@ -3,6 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { usersRouter } from "./controllers/users-store";
 import { operationsRouter } from "./controllers/operations";
+import { debugRoute } from "./controllers/debug";
 
 const app = express();
 const PORT = 3000;
@@ -20,6 +21,7 @@ app.use(
 app.use(bodyParser.json());
 
 // Подключение маршрутов
+app.use("/api/logs", debugRoute);
 app.use("/api", usersRouter);
 app.use("/api/operations", operationsRouter);
 

@@ -1,10 +1,7 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-import {
-  SECRET_KEY,
-  verifyTokenMiddleware,
-} from "../middlewares/verifyTokenMiddleware";
+import { SECRET_KEY } from "../middlewares/verifyTokenMiddleware";
 import fs from "fs";
 import path from "path";
 import { ensureFileExists } from "../helpers/fileHelper";
