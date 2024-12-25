@@ -1,14 +1,22 @@
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 
-export const parseUser = (token: string | undefined, secretKey: string) => {
+export interface IParseTokenResult {
+  isValid: boolean;
+  user: { id: number; username: string } | null;
+}
+
+export const parseUser = (
+  token: string | undefined,
+  secretKey: string
+): IParseTokenResult => {
   if (!token) {
-    return { status: 401, user: null };
+    return { isValid: false, user: null };
   }
 
   try {
     const decoded = jsonwebtoken.verify(token, secretKey) as JwtPayload;
-    return { status: 200, user: decoded?.user };
+    return { isValid: true, user: decoded?.user };
   } catch (error) {
-    return { status: 403, user: null };
+    return { isValid: false, user: null };
   }
 };

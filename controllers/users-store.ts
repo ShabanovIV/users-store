@@ -35,9 +35,12 @@ const writeUsers = (users: User[]): void => {
 usersRouter.get("/verify-token", (req: Request, res: Response) => {
   const token = req.headers["authorization"]?.split(" ")[1];
   const result = parseUser(token, SECRET_KEY);
-  res
-    .status(result.status)
-    .json({ message: "Токен валиден", user: result.user });
+
+  if (result.isValid === false) {
+    res.status(401).json({ message: "Токен невалиден", user: null });
+    return;
+  }
+  res.status(200).json({ message: "Токен валиден", user: result.user });
 });
 
 // Роут для регистрации пользователя
