@@ -5,7 +5,7 @@ export interface IParseTokenResult {
   user: { id: number; username: string } | null;
 }
 
-export const parseUser = (
+export const parseToken = (
   token: string | undefined,
   secretKey: string
 ): IParseTokenResult => {

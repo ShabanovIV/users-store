@@ -5,7 +5,7 @@ import { SECRET_KEY } from "../middlewares/verifyTokenMiddleware";
 import fs from "fs";
 import path from "path";
 import { ensureFileExists } from "../helpers/fileHelper";
-import { parseUser } from "../helpers/tokenHelper";
+import { parseToken } from "../helpers/tokenHelper";
 
 export const usersRouter = Router();
 
@@ -34,7 +34,7 @@ const writeUsers = (users: User[]): void => {
 // Роут для проверки токена
 usersRouter.get("/verify-token", (req: Request, res: Response) => {
   const token = req.headers["authorization"]?.split(" ")[1];
-  const result = parseUser(token, SECRET_KEY);
+  const result = parseToken(token, SECRET_KEY);
 
   if (result.isValid === false) {
     res.status(401).json({ message: "Токен невалиден", user: null });
