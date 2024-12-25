@@ -14,10 +14,10 @@ export function verifyTokenMiddleware(
   const token = req.headers["authorization"]?.split(" ")[1];
   const result = parseToken(token, SECRET_KEY);
 
-  if (result.status === 200) {
+  if (result.isValid) {
     (req as any).user = result.user;
     next();
   } else {
-    return res.status(result.status).json({ message: "Доступ запрещён" });
+    return res.status(403).json({ message: "Доступ запрещён" });
   }
 }
